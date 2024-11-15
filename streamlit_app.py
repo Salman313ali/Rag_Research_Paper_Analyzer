@@ -71,11 +71,8 @@ if uploaded_file is not None:
     # Display the original PDF
     display_pdf(st.session_state.current_pdf, pdf_container)
     
-    print("loaded")
     documents = get_pdf_text(uploaded_file)
-    print("pdf text loaded")
     embd_api_key = st.session_state.api_key or os.getenv("JINA_API_KEY")
-    print("api key loaded")
     st.session_state.vector_store = create_vectorstore_from_texts(documents, api_key=embd_api_key, file_name=uploaded_file.name)
     
     # Move success message to col1
