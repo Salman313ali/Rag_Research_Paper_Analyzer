@@ -183,7 +183,7 @@ def get_embedding_function(api_key):
         OpenAIEmbeddings: An OpenAIEmbeddings object, which can be used to create vector embeddings from text.
     """
     try:
-        # Initialize the CohereEmbeddings object with the provided API key
+        # Initialize the JinaEmbeddings object with the provided API key
         embeddings = JinaEmbeddings(
         jina_api_key= api_key,
         model_name="jina-embeddings-v3",
@@ -214,12 +214,10 @@ def create_vectorstore(chunks, embedding_function, file_name, vector_store_path=
         # Ensure that only unique docs with unique ids are kept
         unique_ids = set()
         unique_chunks = []
-        print("creating done")
         for chunk, id in zip(chunks, ids):     
             if id not in unique_ids:       
                 unique_ids.add(id)
                 unique_chunks.append(chunk)        
-        print("for done")
         
         # Create a new Chroma database from the documents
         vectorstore = Chroma.from_documents(
@@ -229,8 +227,7 @@ def create_vectorstore(chunks, embedding_function, file_name, vector_store_path=
             ids=list(unique_ids), 
             persist_directory=vector_store_path
         )
-        print("vec done")
-        
+
         return vectorstore
     
     except Exception as e:
@@ -251,16 +248,13 @@ def create_vectorstore_from_texts(documents, api_key, file_name):
 
     :return: A Chroma vector store object
     """
-    print("splited")
     docs = split_document(documents, chunk_size=1000, chunk_overlap=200)
     
     # Step 3 define embedding function
     embedding_function = get_embedding_function(api_key)
-    print("get function done")
 
     # Step 4 create a vector store  
     vectorstore = create_vectorstore(docs, embedding_function, file_name)
-    print("creating db done")
     
     return vectorstore
 
